@@ -5,14 +5,20 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function Second() {
   const [darkMode, setDarkMode] = useState(() => {
-    const storedDarkMode = localStorage.getItem('darkMode');
-    return storedDarkMode !== null ? JSON.parse(storedDarkMode) : true;
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedDarkMode = localStorage.getItem('darkMode');
+      return storedDarkMode !== null ? JSON.parse(storedDarkMode) : true;
+    }
+    return true; // Default value if localStorage is not available
   });
 
   const [todoInput, setTodoInput] = useState('');
   const [todos, setTodos] = useState(() => {
-    const storedTodos = localStorage.getItem('todos');
-    return storedTodos !== null ? JSON.parse(storedTodos) : [];
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedTodos = localStorage.getItem('todos');
+      return storedTodos !== null ? JSON.parse(storedTodos) : [];
+    }
+    return []; // Default value if localStorage is not available
   });
 
   const [filter, setFilter] = useState('all');
@@ -123,7 +129,9 @@ function Second() {
 
           <ul className="mt-4  md:w-[33%]">
             {filteredTodos.map((todo, index) => (
-              <div key={index} className={`flex  flex-row justify- items-center w-full p-5 ${darkMode ? 'bg-[#FFFFFF]' : 'bg-[#25273C]'} text-[#888AA2] space-x-2 mb-2  flex-wrap `} >
+              <div key={index} className={`flex  flex-row justify-between items-center w-full p-5 ${darkMode ? 'bg-[#FFFFFF]' : 'bg-[#25273C]'} text-[#888AA2]  mb-2  flex-wrap`} >
+             
+                <div className='space-x-2'>
                 <input
                   type="radio"
                   checked={todo.completed}
@@ -132,6 +140,7 @@ function Second() {
                 <span className={todo.completed ? 'line-through' : ''}>
                   {todo.text}
                 </span>
+                </div>
                <div className="flex space-x-2">
               <button className='bg-[blue] text-white' style={{ padding: '2px 8px', flexShrink: 0 }} onClick={() => editTodo(index)}>
                 Edit
